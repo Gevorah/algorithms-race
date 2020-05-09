@@ -1,52 +1,87 @@
 package model;
 
 public class LinkedList {
-	private Element first;
+	private Node first;
 	public LinkedList() {
 		
 	}
+	public void recursiveAdd(long value) {
+		first = recursiveAdd(first,value);
+	}
+	private Node recursiveAdd(Node current, long value) {
+		if(current==null) {
+			return new Node(value);
+		} else {
+			current.next = recursiveAdd(current.next,value);
+		}
+		return current;
+	}
+	public boolean recursiveSearch(long value) {
+		return recursiveSearch(first,value);
+	}
+	private boolean recursiveSearch(Node current, long value) {
+		if(current==null) {
+			return false;
+		} else if(current.value==value) {
+			return true;
+		}
+		return recursiveSearch(current.next,value);
+	}
+	public void recursiveDelete(long value) {
+		first = recursiveDelete(first,value);
+	}
+	private Node recursiveDelete(Node current, long value) {
+		  if (current==null) return null;
+		  if (current.value==value) {
+		    Node tmpNext;
+		    tmpNext = current.next;
+		    current = null;
+		    return tmpNext;
+		  }
+		  current.next = recursiveDelete(current.next,value);
+		  return current;
+	}
 	public void iterativeAdd(long value) {
-		Element add = new Element(value);
+		Node add = new Node(value);
 		if(first==null) {
 			first = add;
 		} else {
-			Element curr = first;
-			while(curr.next!=null) {
-				curr = curr.next;
+			Node current = first;
+			while(current.next!=null) {
+				current = current.next;
 			}
-			add.previous = curr;
-			curr.next = add;
+			current.next = add;
 		}
 	}
 	public boolean iterativeSearch(long value) {
 		boolean exist = false;
-		Element curr = first;
-		while(curr!=null || !exist) {
-			if(curr.value==value) exist=true;
-			curr = curr.next;
+		Node current = first;
+		while(current!=null && exist) {
+			if(current.value==value) exist=true;
+			current = current.next;
 		}
 		return exist;
 	}
 	public boolean iterativeDelete(long value) {
 		boolean deleted = false;
-		Element curr = first;
-		while(curr!=null && !deleted) {
-			if(curr.value==value) {
-				curr.previous.next = curr.next;
-				curr.next.previous = curr.previous;
-				curr = null;
+		Node previous = null;
+		Node current = first;
+		while(current!=null && deleted) {
+			if(current.value==value) {
+				previous.next = current.next;
+				current = null;
 				deleted = true;
 			} else {
-				curr = curr.next;
+				previous = previous.next;
+				current = current.next;
 			}
 		}
 		return deleted;
 	}
-	private class Element {
+	private class Node {
 		private long value;
-		private Element previous;
-		private Element next;
-		public Element(long value) {
+		private Node next;
+		public Node(long value) {
 			this.value = value;
 		}
 	}
