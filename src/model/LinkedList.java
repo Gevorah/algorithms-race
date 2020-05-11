@@ -1,12 +1,12 @@
 package model;
 
 public class LinkedList {
-	private Node first;
+	private Node head;
 	public LinkedList() {
 		
 	}
 	public void recursiveAdd(long value) {
-		first = recursiveAdd(first,value);
+		head = recursiveAdd(head,value);
 	}
 	private Node recursiveAdd(Node current, long value) {
 		if(current==null) {
@@ -17,7 +17,7 @@ public class LinkedList {
 		return current;
 	}
 	public boolean recursiveSearch(long value) {
-		return recursiveSearch(first,value);
+		return recursiveSearch(head,value);
 	}
 	private boolean recursiveSearch(Node current, long value) {
 		if(current==null) {
@@ -28,7 +28,7 @@ public class LinkedList {
 		return recursiveSearch(current.next,value);
 	}
 	public void recursiveDelete(long value) {
-		first = recursiveDelete(first,value);
+		head = recursiveDelete(head,value);
 	}
 	private Node recursiveDelete(Node current, long value) {
 		  if (current==null) return null;
@@ -43,10 +43,10 @@ public class LinkedList {
 	}
 	public void iterativeAdd(long value) {
 		Node add = new Node(value);
-		if(first==null) {
-			first = add;
+		if(head==null) {
+			head = add;
 		} else {
-			Node current = first;
+			Node current = head;
 			while(current.next!=null) {
 				current = current.next;
 			}
@@ -55,7 +55,7 @@ public class LinkedList {
 	}
 	public boolean iterativeSearch(long value) {
 		boolean exist = false;
-		Node current = first;
+		Node current = head;
 		while(current!=null && exist) {
 			if(current.value==value) exist=true;
 			current = current.next;
@@ -65,7 +65,7 @@ public class LinkedList {
 	public boolean iterativeDelete(long value) {
 		boolean deleted = false;
 		Node previous = null;
-		Node current = first;
+		Node current = head;
 		while(current!=null && deleted) {
 			if(current.value==value) {
 				previous.next = current.next;

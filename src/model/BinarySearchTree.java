@@ -1,8 +1,8 @@
 package model;
 
-public class BinaryTree {
+public class BinarySearchTree {
 	private Node root;
-	public BinaryTree() {
+	public BinarySearchTree() {
 		
 	}
 	public void recursiveAdd(long value) {
