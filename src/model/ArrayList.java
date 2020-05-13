@@ -14,24 +14,24 @@ public class ArrayList {
 		return recursiveSearch(0,value);
 	}
 	private boolean recursiveSearch(int index, long value) {
-		if(index>=list.size()){
+		if(index==list.size()){
 			return false;
 		} else if(list.get(index).value==value) {
 			return true;
 		}
-		return recursiveSearch(index++,value);
+		return recursiveSearch(++index,value);
 	}
 	public boolean recursiveDelete(long value) {
 		return recursiveDelete(0,value);
 	}
 	private boolean recursiveDelete(int index, long value) {
-		if(index>=list.size()){
+		if(index==list.size()){
 			return false;
 		} else if(list.get(index).value==value) {
 			list.remove(index);
 			return true;
 		}
-		return recursiveDelete(index++,value);
+		return recursiveDelete(++index,value);
 	}
 	public boolean iterativeSearch(long value) {
 		boolean exist = false;

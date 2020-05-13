@@ -10,9 +10,10 @@ public class Timekeeper extends Thread {
 	public void run() {
 		int min=0,sec=0,millis=0;
 		try {
-			while(active) {
+			long a = System.currentTimeMillis();
+			while(min==0) {
 				Thread.sleep(4);
-				millis+=4;
+				millis+=5;
 				if(millis==1000) {
 					millis = 0;
 					sec++;
@@ -21,7 +22,8 @@ public class Timekeeper extends Thread {
 						min++;
 					}
 				}
-				timer = String.format("%02d:%02d:%03d",min,sec,millis);
+				timer = String.format("%02d:%02d:%d",min,sec,millis);
+				System.out.println(millis+"   "+(System.currentTimeMillis()-a));
 			}
 		} catch (Exception e) {
 			e.getStackTrace();

@@ -104,7 +104,10 @@ public class GUI {
     					outerCircle.setRadius(outerCircle.getRadius()-0.1);
     					innerCircle.setRadius(innerCircle.getRadius()+0.1);
     				}
-    				if(!(alt.isAlive()&&llt.isAlive()&&bstt.isAlive())) stop();
+    				if(!(alt.isAlive()&&llt.isAlive()&&bstt.isAlive())) {
+    					tk.stopTimekeeper();
+    					stop();
+    				}
     				updateTime(tk.getTimer(),alt.isAlive(),llt.isAlive(),bstt.isAlive());
     			}
     		};

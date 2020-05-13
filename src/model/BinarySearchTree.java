@@ -52,14 +52,6 @@ public class BinarySearchTree {
 	private long findMinimum(Node root) {
 	    return root.left==null?root.value:findMinimum(root.left);
 	}
-	public static void main(String[] args) {
-		BinarySearchTree bst = new BinarySearchTree();
-		bst.iterativeAdd(12);
-		bst.iterativeAdd(6);
-		bst.iterativeAdd(1);
-		bst.iterativeAdd(9);
-		bst.iterativeDelete(6);
-	}
 	public void iterativeAdd(long value) {
 		Node add = new Node(value);
 		if(root==null) {
@@ -101,6 +93,21 @@ public class BinarySearchTree {
 		}
 		return false;
 	}
+	public static void main(String[] args) {
+		BinarySearchTree bst = new BinarySearchTree();
+		bst.iterativeAdd(16);
+		bst.iterativeAdd(6);
+		bst.iterativeAdd(9);
+		bst.iterativeAdd(23);
+		bst.iterativeAdd(26);
+		bst.iterativeAdd(30);
+		bst.iterativeAdd(1);
+		bst.iterativeAdd(3);
+		bst.iterativeAdd(29);
+		bst.iterativeDelete(3);
+		bst.iterativeDelete(16);
+		bst.iterativeDelete(29);
+	}
 	public boolean iterativeDelete(long value) {
 		Node parent = null;
 		Node current = root;
@@ -118,33 +125,28 @@ public class BinarySearchTree {
 		}
 		if(exist==true) {
 			if(parent==null) {
-				root = null;
+				if (root.left==null && root.right==null) {
+					root = null;
+				} else if (current.right == null) {
+					root = current.left;
+				} else if (current.left == null) {
+					root = current.right;
+				} else {
+					long minimum = findMinimum(current.right);
+					iterativeDelete(minimum);
+					root.value = minimum;
+				}
 			} else if(parent.left==current) {
 				if (current.left==null && current.right==null) {
 					parent.left = null;
 				} else if (current.right == null) {
 					parent.left = current.left;
 				} else if (current.left == null) {
-					parent.left= current.right;
+					parent.left = current.right;
 				} else {
 					long minimum = findMinimum(current.right);
-					parent.left.value = minimum;
-					parent = current;
-					current = current.right;
-					while(current.value!=minimum) {
-						if(current.value>value) {
-							parent = current;
-							current = current.left;
-						} else if(current.value<value) {
-							parent = current;
-							current = current.right;
-						}
-					}
-					if(parent.left==current) {
-						parent.left = null;
-					} else if(parent.right==current) {
-						parent.right = null;
-					}
+					iterativeDelete(minimum);
+					root.value = minimum;
 				}
 			} else if(parent.right==current) {
 				if (current.left==null && current.right==null) {
@@ -155,23 +157,8 @@ public class BinarySearchTree {
 					parent.right = current.right;
 				} else {
 					long minimum = findMinimum(current.right);
-					parent.right.value = minimum;
-					parent = current;
-					current = current.right;
-					while(current.value!=minimum) {
-						if(current.value>value) {
-							parent = current;
-							current =current.left;
-						} else if(current.value<value) {
-							parent = current;
-							current = current.right;
-						}
-					}
-					if(parent.left==current) {
-						parent.left = null;
-					} else if(parent.right==current) {
-						parent.right = null;
-					}
+					iterativeDelete(minimum);
+					root.value = minimum;
 				}
 				
 			}

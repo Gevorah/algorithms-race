@@ -20,6 +20,7 @@ public class ArrayListThread extends Thread {
 				al.add(value);
 			}
 		}
+		long s = System.currentTimeMillis();
 		switch (option) {
 		case Constants.OPTION_1:
 			for(long value:n) {
@@ -52,5 +53,6 @@ public class ArrayListThread extends Thread {
 			}
 			break;
 		}
+		System.out.println(System.currentTimeMillis()-s);
 	}
 }
