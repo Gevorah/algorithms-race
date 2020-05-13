@@ -3,7 +3,7 @@ package model;
 public class LinkedList {
 	private Node head;
 	public LinkedList() {
-		
+		head = null;
 	}
 	public void recursiveAdd(long value) {
 		head = recursiveAdd(head,value);
@@ -33,8 +33,7 @@ public class LinkedList {
 	private Node recursiveDelete(Node current, long value) {
 		  if (current==null) return null;
 		  if (current.value==value) {
-		    Node tmpNext;
-		    tmpNext = current.next;
+		    Node tmpNext = current.next;
 		    current = null;
 		    return tmpNext;
 		  }
@@ -56,7 +55,7 @@ public class LinkedList {
 	public boolean iterativeSearch(long value) {
 		boolean exist = false;
 		Node current = head;
-		while(current!=null && exist) {
+		while(current!=null && !exist) {
 			if(current.value==value) exist=true;
 			current = current.next;
 		}
@@ -66,13 +65,13 @@ public class LinkedList {
 		boolean deleted = false;
 		Node previous = null;
 		Node current = head;
-		while(current!=null && deleted) {
+		while(current!=null && !deleted) {
 			if(current.value==value) {
 				previous.next = current.next;
 				current = null;
 				deleted = true;
 			} else {
-				previous = previous.next;
+				previous = current;
 				current = current.next;
 			}
 		}

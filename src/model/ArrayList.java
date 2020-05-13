@@ -35,7 +35,7 @@ public class ArrayList {
 	}
 	public boolean iterativeSearch(long value) {
 		boolean exist = false;
-		for(int i=0;i<list.size() && exist;i++) {
+		for(int i=0;i<list.size() && !exist;i++) {
 			if(list.get(i).value==value) {
 				exist = true;
 			}
@@ -44,7 +44,7 @@ public class ArrayList {
 	}
 	public boolean iterativeDelete(long value) {
 		boolean deleted = false;
-		for (int i=0;i<list.size() && deleted;i++) {
+		for (int i=0;i<list.size() && !deleted;i++) {
 			if(list.get(i).value==value) {
 				list.remove(i);
 				deleted = true;

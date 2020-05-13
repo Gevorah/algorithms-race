@@ -52,20 +52,41 @@ public class BinarySearchTree {
 	private long findMinimum(Node root) {
 	    return root.left==null?root.value:findMinimum(root.left);
 	}
+	public static void main(String[] args) {
+		BinarySearchTree bst = new BinarySearchTree();
+		bst.iterativeAdd(12);
+		bst.iterativeAdd(6);
+		bst.iterativeAdd(1);
+		bst.iterativeAdd(9);
+		bst.iterativeDelete(6);
+	}
 	public void iterativeAdd(long value) {
 		Node add = new Node(value);
-		Node current = root;
-		boolean exist = false;
-		while(current!=null && !exist) {
-			if(current.value>value) {
-				current = current.left;
-			} else if(current.value<value) {
-				current = current.right;
-			} else {
-				exist = true;
+		if(root==null) {
+			root = add;
+		} else {
+			Node current = root;
+			boolean exist = false;
+			while(current!=null && !exist) {
+				if(current.value>value) {
+					if(current.left!=null) {
+						current = current.left;
+					} else {
+						current.left = add;
+						exist = true;
+					}
+				} else if(current.value<value) {
+					if(current.right!=null) {
+						current = current.right;
+					} else {
+						current.right = add;
+						exist = true;
+					}
+				} else {
+					exist = true;
+				}
 			}
 		}
-		if(exist==false) current=add;
 	}
 	public boolean iterativeSearch(long value) {
 		Node current = root;
@@ -81,37 +102,80 @@ public class BinarySearchTree {
 		return false;
 	}
 	public boolean iterativeDelete(long value) {
+		Node parent = null;
 		Node current = root;
 		boolean exist = false;
-		while(current!=null && exist) {
+		while(current!=null && !exist) {
 			if(current.value>value) {
-				current =current.left;
+				parent = current;
+				current = current.left;
 			} else if(current.value<value) {
+				parent = current;
 				current = current.right;
 			} else {
 				exist = true;
 			}
 		}
-		if(exist!=false) {
-			if (current.left==null && current.right==null) {
-				current = null;
-			} else if (current.right == null) {
-				current = current.left;
-			} else if (current.left == null) {
-				current = current.right;
-			} else {
-				long minimum = findMinimum(current.right);
-				current.value = minimum;
-				current = current.right;
-				while(current.value!=minimum) {
-					if(current.value>value) {
-						current =current.left;
-					} else if(current.value<value) {
-						current = current.right;
+		if(exist==true) {
+			if(parent==null) {
+				root = null;
+			} else if(parent.left==current) {
+				if (current.left==null && current.right==null) {
+					parent.left = null;
+				} else if (current.right == null) {
+					parent.left = current.left;
+				} else if (current.left == null) {
+					parent.left= current.right;
+				} else {
+					long minimum = findMinimum(current.right);
+					parent.left.value = minimum;
+					parent = current;
+					current = current.right;
+					while(current.value!=minimum) {
+						if(current.value>value) {
+							parent = current;
+							current = current.left;
+						} else if(current.value<value) {
+							parent = current;
+							current = current.right;
+						}
+					}
+					if(parent.left==current) {
+						parent.left = null;
+					} else if(parent.right==current) {
+						parent.right = null;
 					}
 				}
-				current = null;
+			} else if(parent.right==current) {
+				if (current.left==null && current.right==null) {
+					parent.right = null;
+				} else if (current.right == null) {
+					parent.right = current.left;
+				} else if (current.left == null) {
+					parent.right = current.right;
+				} else {
+					long minimum = findMinimum(current.right);
+					parent.right.value = minimum;
+					parent = current;
+					current = current.right;
+					while(current.value!=minimum) {
+						if(current.value>value) {
+							parent = current;
+							current =current.left;
+						} else if(current.value<value) {
+							parent = current;
+							current = current.right;
+						}
+					}
+					if(parent.left==current) {
+						parent.left = null;
+					} else if(parent.right==current) {
+						parent.right = null;
+					}
+				}
+				
 			}
+			current = null;
 		}
 		return exist;
 	}

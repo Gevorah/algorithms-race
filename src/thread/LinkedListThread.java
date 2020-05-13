@@ -17,7 +17,7 @@ public class LinkedListThread extends Thread {
 		if(option.equals(Constants.OPTION_2)||option.equals(Constants.OPTION_3)||
 				option.equals(Constants.OPTION_5)||option.equals(Constants.OPTION_6)) {
 			for(long value:n) {
-				ll.recursiveAdd(value);
+				ll.iterativeAdd(value);
 			}
 		}
 		switch (option) {

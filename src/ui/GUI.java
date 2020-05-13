@@ -1,10 +1,6 @@
 package ui;
 
-import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -72,46 +68,55 @@ public class GUI {
     @FXML
     public void initializeRace(ActionEvent event) {
     	if(check()) {
-    		Thread t = new Thread() {
+    		bRun.setDisable(true);
+    		updateTime(Constants.START_TIME,true,true,true);
+    		new Thread() {
     			public void run() {
-    	   			long[] array = generateRandom(Integer.parseInt(txtN.getText()));
-    	   			returnArray(array);
-    	    	}
-    		};
-    		t.start();
-    		try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-    			ArrayListThread alt = new ArrayListThread(al,generatedArray,option());
-    			LinkedListThread llt = new LinkedListThread(ll,generatedArray,option());
-    			BinarySearchTreeThread bstt = new BinarySearchTreeThread(bst,generatedArray,option());
-    			Timekeeper tk = new Timekeeper();
-    			AnimationTimer at = new AnimationTimer() {
-    				public boolean t=true;
-    				@Override
-    				public void handle(long now) {
-    					if((int)outerCircle.getRadius()==(int)innerCircle.getRadius()) t=true;
-    					if(outerCircle.getRadius()==Constants.MAX_RADIO) t=false;
-    					if(t==true) {
-    						outerCircle.setRadius(outerCircle.getRadius()+0.1);
-    						innerCircle.setRadius(innerCircle.getRadius()-0.1);
-    					} else if(t==false) {
-    						outerCircle.setRadius(outerCircle.getRadius()-0.1);
-    						innerCircle.setRadius(innerCircle.getRadius()+0.1);
-    					}
-    					update(tk.getTimer(),alt.isAlive(),llt.isAlive(),bstt.isAlive());
+    				long[] array = new long[Integer.parseInt(txtN.getText())];
+    				for(int i=0;i<array.length;i++) {
+    					array[i] = Long.MIN_VALUE+(long)(Math.random()*(Long.MAX_VALUE-Long.MIN_VALUE));
     				}
-    			};
-    			tk.start();
-    			at.start();
-    			alt.start();
-    			llt.start();
-    			bstt.start();
+    				returnArray(array);
+    			}
+    		}.start();
+    		try {
+    			Thread.sleep(500);
+    		} catch (InterruptedException e) {
+    			e.printStackTrace();
+    		}
+    		Timekeeper tk = new Timekeeper();
+    		Timekeeper tkArrayList = new Timekeeper();
+    		Timekeeper tkLinkedList = new Timekeeper();
+    		Timekeeper tkBST = new Timekeeper();
+    		ArrayListThread alt = new ArrayListThread(al,generatedArray,option());
+    		LinkedListThread llt = new LinkedListThread(ll,generatedArray,option());
+    		BinarySearchTreeThread bstt = new BinarySearchTreeThread(bst,generatedArray,option());
+    		AnimationTimer at = new AnimationTimer() {
+    			public boolean t=true;
+    			@Override
+    			public void handle(long now) {
+    				if((int)outerCircle.getRadius()==(int)innerCircle.getRadius()) t=true;
+    				if(outerCircle.getRadius()==Constants.MAX_RADIO) t=false;
+    				if(t==true) {
+    					outerCircle.setRadius(outerCircle.getRadius()+0.1);
+    					innerCircle.setRadius(innerCircle.getRadius()-0.1);
+    				} else if(t==false) {
+    					outerCircle.setRadius(outerCircle.getRadius()-0.1);
+    					innerCircle.setRadius(innerCircle.getRadius()+0.1);
+    				}
+    				if(!(alt.isAlive()&&llt.isAlive()&&bstt.isAlive())) stop();
+    				updateTime(tk.getTimer(),alt.isAlive(),llt.isAlive(),bstt.isAlive());
+    			}
+    		};
+    		tk.start();
+    		at.start();
+    		alt.start();
+    		llt.start();
+    		bstt.start();
+    		bRun.setDisable(false);
     	}
     }
-    public void update(String time, boolean al, boolean ll, boolean bst) {
+    public void updateTime(String time, boolean al, boolean ll, boolean bst) {
     	lbTimekeeper.setText(time);
     	if(al==true) lbArrayList.setText(time);
     	if(ll==true) lbLinkedList.setText(time);
@@ -138,13 +143,13 @@ public class GUI {
     	}
     	return option;
     }
-    private long[] generateRandom(int n) {
+    /*private long[] generateRandom(int n) {
 		long[] array = new long[n];
 		for(int i=0;i<n;i++) {
 			array[i] = Long.MIN_VALUE+(long)(Math.random()*(Long.MAX_VALUE-Long.MIN_VALUE));
 		}
     	return array;
-    }
+    }*/
     private boolean check() {
     	if((!txtN.getText().trim().isEmpty()) && 
     		(rbAdd.isSelected()||rbSearch.isSelected()||rbDelete.isSelected()) && 

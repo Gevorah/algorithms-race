@@ -91,7 +91,7 @@
             <Font size="17.0" />
          </font>
       </Label>
-      <Label fx:id="lbTimekeeper" layoutX="328.0" layoutY="42.0" maxHeight="50.0" maxWidth="170.0" minHeight="50.0" minWidth="170.0" prefHeight="50.0" prefWidth="170.0" text="03:05:231" textOverrun="CENTER_ELLIPSIS">
+      <Label fx:id="lbTimekeeper" layoutX="328.0" layoutY="42.0" maxHeight="50.0" maxWidth="170.0" minHeight="50.0" minWidth="170.0" prefHeight="50.0" prefWidth="170.0" text="00:00:000" textOverrun="CENTER_ELLIPSIS">
          <font>
             <Font name="System Bold" size="33.0" />
          </font>
@@ -117,8 +117,8 @@
       <Label layoutX="505.0" layoutY="174.0" text="BST" />
       <Label layoutX="405.0" layoutY="174.0" text="LinkedList" />
       <Label layoutX="329.0" layoutY="174.0" text="ArrayList" />
-      <Label fx:id="lbArrayList" layoutX="326.0" layoutY="190.0" />
-      <Label fx:id="lbLinkedList" layoutX="406.0" layoutY="189.0" />
-      <Label fx:id="lbBST" layoutX="485.0" layoutY="190.0" />
+      <Label fx:id="lbArrayList" layoutX="326.0" layoutY="190.0" text="00:00:000" />
+      <Label fx:id="lbLinkedList" layoutX="406.0" layoutY="189.0" text="00:00:000" />
+      <Label fx:id="lbBST" layoutX="485.0" layoutY="190.0" text="00:00:000" />
    </children>
 </Pane>
