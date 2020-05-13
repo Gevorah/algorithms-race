@@ -11,7 +11,7 @@ public class Timekeeper extends Thread {
 		int min=0,sec=0,millis=0;
 		try {
 			long a = System.currentTimeMillis();
-			while(min==0) {
+			while(active) {
 				Thread.sleep(4);
 				millis+=5;
 				if(millis==1000) {
