@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<DialogPane fx:id="popup" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <GridPane prefHeight="230.0" prefWidth="360.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="223.0" minWidth="0.0" prefWidth="87.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="272.0" minWidth="0.0" prefWidth="247.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <ProgressBar fx:id="pbAL" prefHeight="30.0" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1" />
+            <ProgressBar fx:id="pbLL" prefHeight="30.0" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ProgressBar fx:id="pbBST" prefHeight="30.0" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="AL" />
+            <Label text="LL" GridPane.rowIndex="1" />
+            <Label text="BST" GridPane.rowIndex="2" />
+         </children>
+      </GridPane>
+   </content>
+   <header>
+      <Pane prefHeight="30.0" prefWidth="200.0">
+         <children>
+            <ProgressIndicator fx:id="piWaiting" layoutX="307.0" layoutY="10.0" prefHeight="39.0" prefWidth="39.0" />
+            <Label fx:id="lbWaiting" layoutX="21.0" layoutY="19.0" text="Waiting for the competitors to be ready..." />
+         </children>
+      </Pane>
+   </header>
+   <buttonTypes>
+      <ButtonType fx:constant="CLOSE" />
+   </buttonTypes>
+</DialogPane>

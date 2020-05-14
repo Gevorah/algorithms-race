@@ -1,15 +1,26 @@
 package ui;
 
+import java.io.IOException;
+
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import model.*;
 import thread.*;
 
@@ -53,6 +64,24 @@ public class GUI {
     @FXML
     private Label lbBST;
     
+    @FXML
+    private DialogPane popup;
+
+    @FXML
+    private ProgressBar pbAL;
+
+    @FXML
+    private ProgressBar pbLL;
+
+    @FXML
+    private ProgressBar pbBST;
+
+    @FXML
+    private ProgressIndicator piWaiting;
+
+    @FXML
+    private Label lbWaiting;
+    
     private ArrayList al;
 	private BinarySearchTree bst;
 	private LinkedList ll;
@@ -67,71 +96,103 @@ public class GUI {
 		generatedArray = array;
 		generatedArraySD = arraySD;
 	}
+	@FXML
+	public void initializePopup() throws Exception {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("Pop-up.fxml"));
+		loader.setController(this);
+		DialogPane root = loader.load();
+		Dialog<ButtonType> dialog = new Dialog<>();
+		dialog.setDialogPane(root);
+		dialog.setTitle("Race");
+		dialog.show();
+	}
     @FXML
-    public void initializeRace(ActionEvent event) {
-    	if(check()) {
-    		bRun.setDisable(true);
-    		String option = option();
-    		updateTime(Constants.START_TIME,true,true,true);
-    		new Thread() {
-    			public void run() {
-    				long[] array = new long[Integer.parseInt(txtN.getText())];
-    				long[] arraySD = new long[Integer.parseInt(txtN.getText())];
-    				for(int i=0;i<array.length;i++) {
-    					array[i] = Long.MIN_VALUE+(long)(Math.random()*(Long.MAX_VALUE-Long.MIN_VALUE));
-    					if(option.equals(Constants.OPTION_2)||option.equals(Constants.OPTION_3)||
-    							option.equals(Constants.OPTION_5)||option.equals(Constants.OPTION_6)) {
-    						arraySD[i] = Long.MIN_VALUE+(long)(Math.random()*(Long.MAX_VALUE-Long.MIN_VALUE));
-    					}
-    				}
-    				returnArrays(array,arraySD);
-    			}
-    		}.start();
-    		try {
-    			Thread.sleep(900);
-    		} catch (InterruptedException e) {
-    			e.printStackTrace();
-    		}
-    		Timekeeper tk = new Timekeeper();
-    		ArrayListThread alt = new ArrayListThread(al,generatedArray,generatedArraySD,option);
-    		LinkedListThread llt = new LinkedListThread(ll,generatedArray,generatedArraySD,option);
-    		BinarySearchTreeThread bstt = new BinarySearchTreeThread(bst,generatedArray,generatedArraySD,option);
-    		AnimationTimer at = new AnimationTimer() {
-    			public boolean t=true;
-    			@Override
-    			public void handle(long now) {
-    				//60FPS
-    				if((int)outerCircle.getRadius()==(int)innerCircle.getRadius()) t=true;
-    				if(outerCircle.getRadius()==Constants.MAX_RADIO) t=false;
-    				//Radius+1 is fast, but Radius+0.1 is slow and allows us to better appreciate animation 
-    				if(t==true) {
-    					outerCircle.setRadius(outerCircle.getRadius()+0.1);
-    					innerCircle.setRadius(innerCircle.getRadius()-0.1);
-    				} else if(t==false) {
-    					outerCircle.setRadius(outerCircle.getRadius()-0.1);
-    					innerCircle.setRadius(innerCircle.getRadius()+0.1);
-    				}
-    				if(!alt.isAlive()&&!llt.isAlive()&&!bstt.isAlive()) {
-    					tk.stopTimekeeper();
-    					//this stop the animation timer
-    					stop();
-    					bRun.setDisable(false);
-    				}
-    				updateTime(tk.getTimer(),alt.isAlive(),llt.isAlive(),bstt.isAlive());
-    			}
-    		};
-    		tk.start();
-    		at.start();
-    		alt.start();
-    		llt.start();
-    		bstt.start();
+    public void initializeRace(ActionEvent event) throws Exception {
+    	try {
+    		if(check()) {
+        		initializePopup();
+        		bRun.setDisable(true);
+        		String option = option();
+        		update(Constants.START_TIME,0,0,0,true,true,true);
+        		new Thread() {
+        			public void run() {
+        				long[] array = new long[Integer.parseInt(txtN.getText())];
+        				long[] arraySD = new long[Integer.parseInt(txtN.getText())];
+        				for(int i=0;i<array.length;i++) {
+        					array[i] = Long.MIN_VALUE+(long)(Math.random()*(Long.MAX_VALUE-Long.MIN_VALUE));
+        					if(option.equals(Constants.OPTION_2)||option.equals(Constants.OPTION_3)||
+        							option.equals(Constants.OPTION_5)||option.equals(Constants.OPTION_6)) {
+        						arraySD[i] = Long.MIN_VALUE+(long)(Math.random()*(Long.MAX_VALUE-Long.MIN_VALUE));
+        					}
+        				}
+        				returnArrays(array,arraySD);
+        			}
+        		}.start();
+        		Thread.sleep(900);
+        		Timekeeper tk = new Timekeeper();
+        		ArrayListThread alt = new ArrayListThread(al,generatedArray,generatedArraySD,option);
+        		LinkedListThread llt = new LinkedListThread(ll,generatedArray,generatedArraySD,option);
+        		BinarySearchTreeThread bstt = new BinarySearchTreeThread(bst,generatedArray,generatedArraySD,option);
+        		AnimationTimer at = new AnimationTimer() {
+        			public boolean circle=true;
+        			public boolean race=false;
+        			@Override
+        			public void handle(long now) {
+        				//60FPS
+        				if((int)outerCircle.getRadius()==(int)innerCircle.getRadius()) circle=true;
+        				if(outerCircle.getRadius()==Constants.MAX_RADIO) circle=false;
+        				//Radius+1 is fast, but Radius+0.1 is slow and allows us to better appreciate animation 
+        				if(circle==true) {
+        					outerCircle.setRadius(outerCircle.getRadius()+0.1);
+        					innerCircle.setRadius(innerCircle.getRadius()-0.1);
+        				} else if(circle==false) {
+        					outerCircle.setRadius(outerCircle.getRadius()-0.1);
+        					innerCircle.setRadius(innerCircle.getRadius()+0.1);
+        				}
+        				if(!alt.isAlive()&&!llt.isAlive()&&!bstt.isAlive()) {
+        					tk.stopTimekeeper();
+        					//this stop the animation timer
+        					stop();
+        					bRun.setDisable(false);
+        				}
+        				if((race==false)&&(alt.isReady()==false)&&(llt.isReady()==false)&&(bstt.isReady()==false)) {
+        					alt.setReady(true);
+        					llt.setReady(true);
+        					bstt.setReady(true);
+        					piWaiting.setVisible(false);
+        					lbWaiting.setVisible(false);
+        					race = true;
+        				}
+        				if(!alt.isAlive()) pbAL.setProgress(1);
+        				if(!llt.isAlive()) pbLL.setProgress(1);
+        				if(!bstt.isAlive()) pbBST.setProgress(1);
+        				update(tk.getTimer(),alt.getProgress(),llt.getProgress(),bstt.getProgress(),alt.isAlive(),llt.isAlive(),bstt.isAlive());
+        			}
+        		};
+        		tk.start();
+        		at.start();
+        		alt.start();
+        		llt.start();
+        		bstt.start();
+        	}
+    	} catch(InterruptedException e) {
+    		e.printStackTrace();
     	}
     }
-    public void updateTime(String time, boolean al, boolean ll, boolean bst) {
+    public void update(String time, double altProgress, double lltProgress, double bsttProgress, boolean alt, boolean llt, boolean bstt) {
     	lbTimekeeper.setText(time);
-    	if(al==true) lbArrayList.setText(time);
-    	if(ll==true) lbLinkedList.setText(time);
-    	if(bst==true) lbBST.setText(time);
+    	if(alt==true) {
+    		lbArrayList.setText(time);
+    		pbAL.setProgress(altProgress);
+    	}
+    	if(llt==true) {
+    		lbLinkedList.setText(time);
+    		pbLL.setProgress(lltProgress);
+    	}
+    	if(bstt==true) {
+    		lbBST.setText(time);
+    		pbBST.setProgress(bsttProgress);
+    	}
     }
     private String option() {
     	String option = null;
@@ -154,13 +215,6 @@ public class GUI {
     	}
     	return option;
     }
-    /*private long[] generateRandom(int n) {
-		long[] array = new long[n];
-		for(int i=0;i<n;i++) {
-			array[i] = Long.MIN_VALUE+(long)(Math.random()*(Long.MAX_VALUE-Long.MIN_VALUE));
-		}
-    	return array;
-    }*/
     private boolean check() {
     	if((!txtN.getText().trim().isEmpty()) && 
     		(rbAdd.isSelected()||rbSearch.isSelected()||rbDelete.isSelected()) && 
