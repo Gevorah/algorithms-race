@@ -67,7 +67,11 @@ public class LinkedList {
 		Node current = head;
 		while(current!=null && !deleted) {
 			if(current.value==value) {
-				previous.next = current.next;
+				if(previous!=null) {
+					previous.next = current.next;
+				} else {
+					head = current.next;
+				}
 				current = null;
 				deleted = true;
 			} else {

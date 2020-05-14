@@ -62,41 +62,48 @@ public class GUI {
 		this.ll = ll;
 	}
 	private long[] generatedArray;
-	private void returnArray(long[] array) {
+	private long[] generatedArraySD;
+	private void returnArrays(long[] array, long[] arraySD) {
 		generatedArray = array;
+		generatedArraySD = arraySD;
 	}
     @FXML
     public void initializeRace(ActionEvent event) {
     	if(check()) {
     		bRun.setDisable(true);
+    		String option = option();
     		updateTime(Constants.START_TIME,true,true,true);
     		new Thread() {
     			public void run() {
     				long[] array = new long[Integer.parseInt(txtN.getText())];
+    				long[] arraySD = new long[Integer.parseInt(txtN.getText())];
     				for(int i=0;i<array.length;i++) {
     					array[i] = Long.MIN_VALUE+(long)(Math.random()*(Long.MAX_VALUE-Long.MIN_VALUE));
+    					if(option.equals(Constants.OPTION_2)||option.equals(Constants.OPTION_3)||
+    							option.equals(Constants.OPTION_5)||option.equals(Constants.OPTION_6)) {
+    						arraySD[i] = Long.MIN_VALUE+(long)(Math.random()*(Long.MAX_VALUE-Long.MIN_VALUE));
+    					}
     				}
-    				returnArray(array);
+    				returnArrays(array,arraySD);
     			}
     		}.start();
     		try {
-    			Thread.sleep(500);
+    			Thread.sleep(900);
     		} catch (InterruptedException e) {
     			e.printStackTrace();
     		}
     		Timekeeper tk = new Timekeeper();
-    		Timekeeper tkArrayList = new Timekeeper();
-    		Timekeeper tkLinkedList = new Timekeeper();
-    		Timekeeper tkBST = new Timekeeper();
-    		ArrayListThread alt = new ArrayListThread(al,generatedArray,option());
-    		LinkedListThread llt = new LinkedListThread(ll,generatedArray,option());
-    		BinarySearchTreeThread bstt = new BinarySearchTreeThread(bst,generatedArray,option());
+    		ArrayListThread alt = new ArrayListThread(al,generatedArray,generatedArraySD,option);
+    		LinkedListThread llt = new LinkedListThread(ll,generatedArray,generatedArraySD,option);
+    		BinarySearchTreeThread bstt = new BinarySearchTreeThread(bst,generatedArray,generatedArraySD,option);
     		AnimationTimer at = new AnimationTimer() {
     			public boolean t=true;
     			@Override
     			public void handle(long now) {
+    				//60FPS
     				if((int)outerCircle.getRadius()==(int)innerCircle.getRadius()) t=true;
     				if(outerCircle.getRadius()==Constants.MAX_RADIO) t=false;
+    				//Radius+1 is fast, but Radius+0.1 is slow and allows us to better appreciate animation 
     				if(t==true) {
     					outerCircle.setRadius(outerCircle.getRadius()+0.1);
     					innerCircle.setRadius(innerCircle.getRadius()-0.1);
@@ -104,9 +111,11 @@ public class GUI {
     					outerCircle.setRadius(outerCircle.getRadius()-0.1);
     					innerCircle.setRadius(innerCircle.getRadius()+0.1);
     				}
-    				if(!(alt.isAlive()&&llt.isAlive()&&bstt.isAlive())) {
+    				if(!alt.isAlive()&&!llt.isAlive()&&!bstt.isAlive()) {
     					tk.stopTimekeeper();
+    					//this stop the animation timer
     					stop();
+    					bRun.setDisable(false);
     				}
     				updateTime(tk.getTimer(),alt.isAlive(),llt.isAlive(),bstt.isAlive());
     			}
@@ -116,7 +125,6 @@ public class GUI {
     		alt.start();
     		llt.start();
     		bstt.start();
-    		bRun.setDisable(false);
     	}
     }
     public void updateTime(String time, boolean al, boolean ll, boolean bst) {
