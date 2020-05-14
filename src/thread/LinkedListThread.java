@@ -28,7 +28,6 @@ public class LinkedListThread extends Thread {
 		progress = 0;
 		ready = false;
 		while(ready==false) {}
-		long start = System.currentTimeMillis();
 		double increase = 1.0/generatedArray.length;
 		switch (option) {
 		case Constants.OPTION_1:
@@ -68,9 +67,6 @@ public class LinkedListThread extends Thread {
 			}
 			break;
 		}
-		int min = (int)(((System.currentTimeMillis()-start) /1000)/60);
-		int sec = (int)(((System.currentTimeMillis()-start)/1000)%60);
-		System.out.println(min+" "+sec+" "+(System.currentTimeMillis()-start));
 	}
 	public double getProgress() {
 		return progress;

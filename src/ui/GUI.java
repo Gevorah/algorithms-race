@@ -1,13 +1,9 @@
 package ui;
 
-import java.io.IOException;
-
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -20,7 +16,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
 import model.*;
 import thread.*;
 
@@ -63,9 +58,6 @@ public class GUI {
 
     @FXML
     private Label lbBST;
-    
-    @FXML
-    private DialogPane popup;
 
     @FXML
     private ProgressBar pbAL;
@@ -162,6 +154,7 @@ public class GUI {
         					piWaiting.setVisible(false);
         					lbWaiting.setVisible(false);
         					race = true;
+        					tk.start();
         				}
         				if(!alt.isAlive()) pbAL.setProgress(1);
         				if(!llt.isAlive()) pbLL.setProgress(1);
@@ -169,7 +162,6 @@ public class GUI {
         				update(tk.getTimer(),alt.getProgress(),llt.getProgress(),bstt.getProgress(),alt.isAlive(),llt.isAlive(),bstt.isAlive());
         			}
         		};
-        		tk.start();
         		at.start();
         		alt.start();
         		llt.start();
